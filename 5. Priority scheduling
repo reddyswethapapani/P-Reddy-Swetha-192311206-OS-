@@ -1,0 +1,46 @@
+#include <stdio.h>
+#define MAX 10
+void preemptivePriority(int at[], int bt[], int pr[], int n) {
+    int rt[MAX], wt[MAX], ct[MAX];
+    int time = 0, completed = 0, min_index;
+    for (int i = 0; i < n; i++) {
+        rt[i] = bt[i];
+        wt[i] = 0;
+    }
+    printf("Process   Completion Time   Waiting Time\n");
+    while (completed < n) {
+        min_index = -1;
+        for (int i = 0; i < n; i++) {
+            if (at[i] <= time && rt[i] > 0 && (min_index == -1 || pr[i] < pr[min_index])) {
+                min_index = i;
+            }
+        }
+        if (min_index == -1) {
+            time++;
+            continue;
+        } 
+        rt[min_index]--;     
+        for (int i = 0; i < n; i++) {
+            if (i != min_index && rt[i] > 0 && at[i] <= time) {
+                wt[i]++;
+            }
+        }
+        if (rt[min_index] == 0) {
+            completed++;
+            ct[min_index] = time + 1;
+            printf("%7d   %15d   %12d\n", min_index + 1, ct[min_index], wt[min_index]);
+        }        
+        time++;
+    }
+}
+int main() {
+    int n, at[MAX], bt[MAX], pr[MAX];
+    printf("Enter number of processes: ");
+    scanf("%d", &n);    
+    for (int i = 0; i < n; i++) {
+        printf("Enter arrival time, burst time, and priority for process %d: ", i + 1);
+        scanf("%d %d %d", &at[i], &bt[i], &pr[i]);
+    }    
+    preemptivePriority(at, bt, pr, n);
+    return 0;
+}
