@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <unistd.h>
+#define N 5  
+pthread_mutex_t chopsticks[N];  
+void *philosopher(void *num) {
+    int id = *(int *)num;
+    while (1) {
+        printf("Philosopher %d is thinking...\n", id);
+        sleep(rand() % 3 + 1);  
+        pthread_mutex_lock(&chopsticks[id]);
+        printf("Philosopher %d picked up left chopstick (%d)\n", id, id);
+        pthread_mutex_lock(&chopsticks[(id + 1) % N]);
+        printf("Philosopher %d picked up right chopstick (%d) and is eating...\n", id, (id + 1) % N);
+        sleep(rand() % 3 + 1);  
+        pthread_mutex_unlock(&chopsticks[(id + 1) % N]);
+        printf("Philosopher %d put down right chopstick (%d)\n", id, (id + 1) % N);
+        pthread_mutex_unlock(&chopsticks[id]);
+        printf("Philosopher %d put down left chopstick (%d) and is thinking again...\n", id, id);
+    }
+    return NULL;
+}
+int main() {
+    pthread_t philosophers[N];
+    int ids[N];
+    for (int i = 0; i < N; i++)
+        pthread_mutex_init(&chopsticks[i], NULL);
+    for (int i = 0; i < N; i++) {
+        ids[i] = i;
+        pthread_create(&philosophers[i], NULL, philosopher, &ids[i]);
+  }
+    for (int i = 0; i < N; i++)
+        pthread_join(philosophers[i], NULL);
+    for (int i = 0; i < N; i++)
+        pthread_mutex_destroy(&chopsticks[i]);
+    return 0;
+}
