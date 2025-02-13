@@ -1,0 +1,70 @@
+#include <stdio.h>
+#define max_size 100
+void lru(int pages[],int total,int frames) 
+{
+    int memory[max_size],recent[max_size],count=0,faults=0;
+    int i,j;
+    for(i=0;i<frames;i++)
+    {
+	memory[i]=-1;
+	recent[i]=-1;
+    }   
+    for(i=0;i<total;i++) 
+	{
+        int found=0,index=-1,min=i;
+        
+        for(j=0;j<count;j++) 
+		{
+            if(memory[j]==pages[i]) 
+			{
+                found=1;
+                index=j;
+                break;
+            }
+        }
+        if(!found) 
+		{
+            faults++;
+            if(count<frames)
+			 {
+                index=count++;
+             } 
+		else
+		{
+		  for(j=0;j<frames;j++)
+		  {
+            if(recent[j]<min)
+			{
+                min=recent[j];
+                index=j;
+            }
+          } 
+        }
+            memory[index]=pages[i];
+      }
+        recent[index]=i;
+        
+        printf("frames: ");
+        for(j=0;j<count;j++)
+		 {
+            printf("%d ",memory[j]);
+         }
+        printf("\n");
+    }
+    printf("Total page faults: %d\n",faults);
+}
+int main() 
+{
+    int pages[max_size],total,frames;
+    printf("no of page requests: \n");
+    scanf("%d",&total);
+    printf("enter page requests: \n");
+    for (int i=0;i<total;i++) 
+	{
+        scanf("%d",&pages[i]);
+    }
+    printf("enter no of frames: \n");
+    scanf("%d",&frames);
+    lru(pages,total,frames);
+    return 0;
+}
