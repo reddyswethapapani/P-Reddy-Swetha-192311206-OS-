@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <unistd.h>
+#define NUM_THREADS 5
+void* print_message(void* arg) 
+{
+    int thread_num = *(int*)arg; 
+    printf("Thread %d is running\n", thread_num);
+    sleep(1);  
+    printf("Thread %d has finished execution\n", thread_num);
+    return NULL;
+}
+int main() 
+{
+    pthread_t threads[NUM_THREADS];
+    int thread_nums[NUM_THREADS];  
+    for (int i=0;i<NUM_THREADS;i++) 
+	{
+        thread_nums[i]=i+1; 
+        if (pthread_create(&threads[i], NULL, print_message, &thread_nums[i]) != 0) {
+            perror("Failed to create thread");
+            return 1;
+        }
+    }
+    for (int i=0;i<NUM_THREADS;i++) 
+	{
+        pthread_join(threads[i],NULL);
+    }
+    printf("All threads have finished execution\n");
+    return 0;
+}
