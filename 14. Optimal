@@ -1,0 +1,80 @@
+#include<stdio.h>
+#define max_size 100
+int predict(int pages[],int memory[],int total,int frames,int index)
+ {
+    int farthest=index,replace_index=0;
+    for (int i=0;i<frames;i++)
+	 {
+        int j;
+        for(j=index;j<total;j++) 
+		{
+            if (memory[i]==pages[j]) 
+			{
+                if(j>farthest) 
+				{
+                    farthest=j;
+                    replace_index=i;
+                }
+                break;
+            }
+        }
+        if (j==total) 
+		{
+            return i;
+        }
+    }
+    return replace_index;
+}
+void optimal_page_replacement(int pages[],int total,int frames)
+{
+    int memory[max_size],count=0,faults=0;
+    for(int i=0;i<frames;i++) 
+	{
+        memory[i]=-1;
+    }
+    for(int i=0;i<total;i++) 
+	{
+        int found=0;
+        for (int j=0;j<count;j++)
+		{
+            if(memory[j]==pages[i])
+			 {
+                found=1;
+                break;
+            }
+        }
+        if(!found)
+		{
+            faults++;
+            if(count<frames) 
+			{
+                memory[count++]=pages[i];
+            } else {
+                int replace_index=predict(pages,memory,total,frames,i+1);
+                memory[replace_index]=pages[i];
+            }
+        }
+        printf("frames: ");
+        for(int j=0;j<count;j++)
+		{
+            printf("%d ",memory[j]);
+        }
+        printf("\n");
+    }
+    
+    printf("Total page faults: %d\n",faults);
+}
+int main() {
+    int pages[max_size],total,frames;
+    printf("no of page requests: \n");
+    scanf("%d",&total);
+    printf("enter page requests: \n");
+    for (int i=0;i<total;i++)
+	 {
+        scanf("%d",&pages[i]);
+    }
+    printf("enter no of frames: \n");
+    scanf("%d",&frames);
+    optimal_page_replacement(pages,total,frames);
+    return 0;
+}
