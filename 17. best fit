@@ -1,0 +1,43 @@
+#include<stdio.h>
+#define max 100
+int main()
+{
+	int b[]={100,300,200,500,600};
+	int p[]={212,417,116,426};
+	int m=5;
+	int n=4;
+	int i,j;
+	int allocation[max];
+	for(i=0;i<n;i++)
+	allocation[i]=-1;
+	for(i=0;i<n;i++)
+	{
+		int bi=-1;
+		for(j=0;j<m;j++)
+		{
+			if(b[j]>=p[i])	
+			{
+				if(bi==-1 || b[j]<b[bi])
+				{
+					bi=j;		
+					
+				}
+				
+			}
+		}
+		if(bi!=-1)
+		{
+			allocation[i]=bi;
+			b[bi]-=p[i];
+		}
+	}
+		printf("\nprocess  size  block\n");
+	for(i=0;i<n;i++)
+	{
+		printf("%d\t   %d\t",i+1,p[i]);
+		if(allocation[i]!=-1)
+		printf("%d\n",allocation[i]+1);
+		else
+		printf("process is not allocated\n");
+	}
+}
