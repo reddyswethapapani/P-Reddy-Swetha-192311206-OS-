@@ -1,0 +1,70 @@
+#include<stdio.h>
+#include<stdlib.h>
+int main()
+{
+	int n,head,direction,seek_time=0,prev_head,i,j;
+	printf("enter the no of requests :");
+	scanf("%d",&n);
+	int req[n];
+	printf("enter the requests :");
+	for(int i=0;i<n;i++)
+	{
+		scanf("%d",&req[i]);
+	}
+	printf("enter the head :");
+	scanf("%d",&head);
+	printf("enter the direction :");
+	scanf("%d",&direction);
+	for(int i=0;i<n-1;i++)
+	{
+		for(int j=i+1;j<n;j++)
+		{
+			if(req[i]>req[j])
+			{
+				int temp=req[i];
+				req[i]=req[j];
+				req[j]=temp;
+			}
+		}
+	}
+	printf("disk sequence :%d",head);
+	for(int i=0;i<n;i++)
+	{
+		if(req[i]>=head)
+		{
+			break;
+		}
+	}
+	prev_head=head;
+	if(direction==1)
+	{
+		for(int j=i;j<n;j++)
+		{
+			seek_time+=abs(req[j]-prev_head);
+			prev_head=req[j];
+			printf("-> %d",req[j]);
+		}
+			for(j=i-1;j>=0;j--)
+		{
+			seek_time+=abs(req[j]-prev_head);
+			prev_head=req[j];
+			printf("-> %d",req[j]);
+		}
+	}
+	else
+	{
+			for(j=i-1;j>=0;j--)
+		{
+			seek_time+=abs(req[j]-prev_head);
+			prev_head=req[j];
+			printf("-> %d",req[j]);
+		}
+			for(j=i;j<n;j++)
+		{
+			seek_time+=abs(req[j]-prev_head);
+			prev_head=req[j];
+			printf("-> %d",req[j]);
+		}
+	}
+	printf("seek time :%d",seek_time);
+}
